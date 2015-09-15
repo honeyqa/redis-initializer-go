@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/garyburd/redigo/redis"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -11,7 +12,6 @@ func connectRedis() (c redis.Conn) {
 	if err != nil {
 		panic(err)
 	}
-	defer c.Close()
 	return c
 }
 
@@ -20,7 +20,6 @@ func connectMysql() (c *sql.DB) {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 	return db
 }
 
@@ -28,5 +27,12 @@ var redis_conn = connectRedis()
 var mysql_conn = connectMysql()
 
 func main() {
+}
 
+func insertToRedis(i int) {
+	n, err := redis_conn.Do("HSET", "honeyqa_shard", "key", "value")
+	if err != nil {
+		panic(err)
+	}
+  fmt.Println(n)
 }
